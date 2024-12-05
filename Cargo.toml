@@ -1,0 +1,18 @@
+[package]
+name = "advent2024"
+version = "0.1.0"
+authors = ["Heath Kehoe <yaheath@gmail.com>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+regex = "*"
+lazy_static = "*"
+itertools = "*"
+derivative = "*"
+json = "*"
+ya_advent_lib = "1.4.0"
+num = "0.4.1"
+rand = "0.8.5"
+#linked-list = "0"
