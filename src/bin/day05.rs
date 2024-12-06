@@ -12,9 +12,9 @@ struct OrderRule {
 impl FromStr for OrderRule {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut si = s.split('|');
-        let earlier = si.next().unwrap().parse::<usize>().unwrap();
-        let later = si.next().unwrap().parse::<usize>().unwrap();
+        let (a, b) = s.split_once('|').unwrap();
+        let earlier = a.parse::<usize>().unwrap();
+        let later = b.parse::<usize>().unwrap();
         Ok(OrderRule { earlier, later })
     }
 }
