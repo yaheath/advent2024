@@ -35,23 +35,23 @@ struct Rules {
 }
 
 impl Rules {
-    fn from_orders(orders: &Vec<OrderRule>) -> Self {
+    fn from_orders(orders: &[OrderRule]) -> Self {
         let rules: HashSet<(usize, usize)> = orders.iter().map(|o| (o.earlier, o.later)).collect();
         Self { rules }
     }
 
-    fn sort_nodes(&self, nodes: &Vec<usize>) -> Vec<usize> {
+    fn sort_nodes(&self, nodes: &[usize]) -> Vec<usize> {
         let nodeset: HashSet<usize> = HashSet::from_iter(nodes.iter().copied());
         let mut topo: TopologicalSort<usize> = TopologicalSort::new();
         self.rules
             .iter()
             .filter(|o| nodeset.contains(&o.0) && nodeset.contains(&o.1))
             .for_each(|o| topo.add_dependency(o.0, o.1));
-        topo.into_iter().collect()
+        topo.collect()
     }
 }
 
-fn bothparts(orders: &Vec<OrderRule>, pages: &Vec<PageList>) -> (usize, usize) {
+fn bothparts(orders: &[OrderRule], pages: &[PageList]) -> (usize, usize) {
     let rules = Rules::from_orders(orders);
     pages
         .iter()
