@@ -14,7 +14,7 @@ enum Cell {
 impl From<char> for Cell {
     fn from(c: char) -> Self {
         match c {
-            'a'..='z' | 'A'..='Z' | '0'..='9' => Cell::Antenna(c),
+            cc if cc.is_ascii_alphanumeric() => Cell::Antenna(cc),
             _ => Cell::Empty,
         }
     }
