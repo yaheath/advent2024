@@ -1,9 +1,9 @@
 use itertools::Itertools;
 use std::collections::HashSet;
 use std::vec::Vec;
-use ya_advent_lib::read::read_input;
 use ya_advent_lib::coords::{CDir, Coord2D};
 use ya_advent_lib::grid::Grid;
+use ya_advent_lib::read::read_input;
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 enum Cell {
@@ -36,7 +36,7 @@ fn part1(input: &[String]) -> usize {
         match grid.get_c(next) {
             Cell::Wall => {
                 dir = dir.right();
-            },
+            }
             _ => {
                 pos = next;
             }
@@ -71,7 +71,7 @@ impl GuardExits for Grid<Cell> {
                     }
                     turns.insert((pos, dir));
                     dir = dir.right();
-                },
+                }
                 _ => {
                     pos = next;
                 }
@@ -104,7 +104,7 @@ mod tests {
     #[test]
     fn day06_test() {
         let input: Vec<String> = test_input(
-"....#.....
+            "....#.....
 .........#
 ..........
 ..#.......
@@ -114,7 +114,8 @@ mod tests {
 ........#.
 #.........
 ......#...
-");
+",
+        );
         assert_eq!(part1(&input), 41);
         assert_eq!(part2(&input), 6);
     }
