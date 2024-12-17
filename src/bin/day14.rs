@@ -1,9 +1,9 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use ya_advent_lib::grid::Grid;
 use std::str::FromStr;
 use std::vec::Vec;
 use ya_advent_lib::coords::Coord2D;
+use ya_advent_lib::grid::Grid;
 use ya_advent_lib::read::read_input;
 
 #[derive(Clone)]
@@ -25,27 +25,42 @@ impl FromStr for Robot {
         let vy = caps.get(4).unwrap().as_str().parse::<i64>().unwrap();
         let pos = Coord2D::new(px, py);
         let vel = Coord2D::new(vx, vy);
-        Ok(Robot{pos, vel})
+        Ok(Robot { pos, vel })
     }
 }
 
 fn part1(input: &[Robot], is_example: bool) -> i64 {
-    let area = if is_example { Coord2D::new(11, 7) } else { Coord2D::new(101, 103) };
+    let area = if is_example {
+        Coord2D::new(11, 7)
+    } else {
+        Coord2D::new(101, 103)
+    };
     let mid = Coord2D::new(area.x / 2, area.y / 2);
     let mut q1 = 0i64;
     let mut q2 = 0i64;
     let mut q3 = 0i64;
     let mut q4 = 0i64;
-    input.iter()
-        .map(|r| Coord2D::new(
-            (r.pos.x + 100 * r.vel.x).rem_euclid(area.x),
-            (r.pos.y + 100 * r.vel.y).rem_euclid(area.y)
-        ))
+    input
+        .iter()
+        .map(|r| {
+            Coord2D::new(
+                (r.pos.x + 100 * r.vel.x).rem_euclid(area.x),
+                (r.pos.y + 100 * r.vel.y).rem_euclid(area.y),
+            )
+        })
         .for_each(|p| {
-            if p.x < mid.x && p.y < mid.y { q1 += 1 };
-            if p.x < mid.x && p.y > mid.y { q2 += 1 };
-            if p.x > mid.x && p.y < mid.y { q3 += 1 };
-            if p.x > mid.x && p.y > mid.y { q4 += 1 };
+            if p.x < mid.x && p.y < mid.y {
+                q1 += 1
+            };
+            if p.x < mid.x && p.y > mid.y {
+                q2 += 1
+            };
+            if p.x > mid.x && p.y < mid.y {
+                q3 += 1
+            };
+            if p.x > mid.x && p.y > mid.y {
+                q4 += 1
+            };
         });
     q1 * q2 * q3 * q4
 }
@@ -74,7 +89,8 @@ fn part2(input: &[Robot]) -> usize {
             r.pos.x = (r.pos.x + r.vel.x).rem_euclid(area.x);
             r.pos.y = (r.pos.y + r.vel.y).rem_euclid(area.y);
         }
-        let center_count = robots.iter()
+        let center_count = robots
+            .iter()
             .filter(|r| center_range.contains(&r.pos.x) && center_range.contains(&r.pos.y))
             .count();
         if center_count > center_count_thresh {
@@ -98,7 +114,7 @@ mod tests {
     #[test]
     fn day14_test() {
         let input: Vec<Robot> = test_input(
-"p=0,4 v=3,-3
+            "p=0,4 v=3,-3
 p=6,3 v=-1,-3
 p=10,3 v=-1,2
 p=2,0 v=2,-1
@@ -110,7 +126,8 @@ p=9,3 v=2,3
 p=7,3 v=-1,2
 p=2,4 v=2,-3
 p=9,5 v=-3,-3
-");
+",
+        );
         assert_eq!(part1(&input, true), 12);
     }
 }

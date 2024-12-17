@@ -1,8 +1,8 @@
 use itertools::Itertools;
 use std::vec::Vec;
 use ya_advent_lib::coords::{CDir, Coord2D};
-use ya_advent_lib::read::read_grouped_input;
 use ya_advent_lib::grid::Grid;
+use ya_advent_lib::read::read_grouped_input;
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 enum Cell {
@@ -37,16 +37,19 @@ trait Day15Grid {
 
 impl Day15Grid for Grid<Cell> {
     fn scaled_from_input(input: &[String]) -> Self {
-        let input2 = input.iter()
-            .map(|line| line.chars().map(|c|
-                match c {
-                    '@' => "@.",
-                    '.' => "..",
-                    '#' => "##",
-                    'O' => "[]",
-                    _ => panic!(),
-                }
-            ).join(""))
+        let input2 = input
+            .iter()
+            .map(|line| {
+                line.chars()
+                    .map(|c| match c {
+                        '@' => "@.",
+                        '.' => "..",
+                        '#' => "##",
+                        'O' => "[]",
+                        _ => panic!(),
+                    })
+                    .join("")
+            })
             .collect::<Vec<_>>();
         Self::from_input(&input2, Cell::Empty, 0)
     }
@@ -61,36 +64,33 @@ impl Day15Grid for Grid<Cell> {
             Cell::Empty => {
                 self.set_c(dest, Cell::Robot);
                 self.set_c(robot, Cell::Empty);
-                return dest;
-            },
-            Cell::Wall => {
-                return robot;
-            },
+                dest
+            }
+            Cell::Wall => robot,
             Cell::Box => {
                 let mut next = dest + dir;
                 while self.get_c(next) == Cell::Box {
                     next += dir;
                 }
                 match self.get_c(next) {
-                    Cell::Wall => {
-                        return robot;
-                    },
+                    Cell::Wall => robot,
                     Cell::Empty => {
                         self.set_c(next, Cell::Box);
                         self.set_c(dest, Cell::Robot);
                         self.set_c(robot, Cell::Empty);
-                        return dest;
-                    },
+                        dest
+                    }
                     _ => panic!(),
                 }
-            },
+            }
             Cell::BoxL | Cell::BoxR => {
                 if self.push_big_box(dest, dir, false) {
                     self.set_c(dest, Cell::Robot);
                     self.set_c(robot, Cell::Empty);
-                    return dest;
+                    dest
+                } else {
+                    robot
                 }
-                return robot;
             }
             _ => panic!(),
         }
@@ -101,37 +101,41 @@ impl Day15Grid for Grid<Cell> {
         match dir {
             CDir::E | CDir::W => {
                 assert!(dir == CDir::E && c == Cell::BoxL || dir == CDir::W && c == Cell::BoxR);
-                assert!(self.get_c(b + dir) == if dir == CDir::E { Cell::BoxR } else {Cell::BoxL});
+                assert!(
+                    self.get_c(b + dir)
+                        == if dir == CDir::E {
+                            Cell::BoxR
+                        } else {
+                            Cell::BoxL
+                        }
+                );
                 let c2 = self.get_c(b + dir);
                 let next = self.get_c(b + dir + dir);
                 match next {
-                    Cell::Wall => {
-                        false
-                    },
+                    Cell::Wall => false,
                     Cell::Empty => {
-            if !test {
-                        self.set_c(b + dir + dir, c2);
-                        self.set_c(b + dir, c);
-                        self.set_c(b, Cell::Empty);
-            }
-                        true
-                    },
-                    Cell::BoxL | Cell::BoxR => {
-                        if self.push_big_box(b + dir + dir, dir, test) {
-            if !test {
+                        if !test {
                             self.set_c(b + dir + dir, c2);
                             self.set_c(b + dir, c);
                             self.set_c(b, Cell::Empty);
-                }
-                            true
                         }
-                        else {
+                        true
+                    }
+                    Cell::BoxL | Cell::BoxR => {
+                        if self.push_big_box(b + dir + dir, dir, test) {
+                            if !test {
+                                self.set_c(b + dir + dir, c2);
+                                self.set_c(b + dir, c);
+                                self.set_c(b, Cell::Empty);
+                            }
+                            true
+                        } else {
                             false
                         }
-                    },
+                    }
                     _ => panic!(),
                 }
-            },
+            }
             CDir::N | CDir::S => {
                 let (bl, br) = if c == Cell::BoxL {
                     (b, b + CDir::E)
@@ -139,33 +143,33 @@ impl Day15Grid for Grid<Cell> {
                     (b + CDir::W, b)
                 };
                 match (self.get_c(bl + dir), self.get_c(br + dir)) {
-                    (Cell::Wall, _) | (_, Cell::Wall) => {
-                        false
-                    },
+                    (Cell::Wall, _) | (_, Cell::Wall) => false,
                     (Cell::Empty, Cell::Empty) => {
-    if !test {
-                        self.set_c(bl + dir, Cell::BoxL);
-                        self.set_c(br + dir, Cell::BoxR);
-                        self.set_c(bl, Cell::Empty);
-                        self.set_c(br, Cell::Empty);
-    }
-                        true
-                    },
-                    (Cell::BoxL, Cell::BoxR) => {
-                        if self.push_big_box(bl + dir, dir, test) {
-        if !test {
+                        if !test {
                             self.set_c(bl + dir, Cell::BoxL);
                             self.set_c(br + dir, Cell::BoxR);
                             self.set_c(bl, Cell::Empty);
                             self.set_c(br, Cell::Empty);
-        }
+                        }
+                        true
+                    }
+                    (Cell::BoxL, Cell::BoxR) => {
+                        if self.push_big_box(bl + dir, dir, test) {
+                            if !test {
+                                self.set_c(bl + dir, Cell::BoxL);
+                                self.set_c(br + dir, Cell::BoxR);
+                                self.set_c(bl, Cell::Empty);
+                                self.set_c(br, Cell::Empty);
+                            }
                             true
                         } else {
                             false
                         }
-                    },
+                    }
                     (Cell::BoxR, Cell::BoxL) => {
-                        if self.push_big_box(bl + dir, dir, true) && self.push_big_box(br + dir, dir, true) {
+                        if self.push_big_box(bl + dir, dir, true)
+                            && self.push_big_box(br + dir, dir, true)
+                        {
                             if !test {
                                 self.push_big_box(bl + dir, dir, false);
                                 self.push_big_box(br + dir, dir, false);
@@ -180,7 +184,11 @@ impl Day15Grid for Grid<Cell> {
                         }
                     }
                     (Cell::BoxR, Cell::Empty) | (Cell::Empty, Cell::BoxL) => {
-                        let bb = if self.get_c(bl + dir) == Cell::Empty { br } else { bl };
+                        let bb = if self.get_c(bl + dir) == Cell::Empty {
+                            br
+                        } else {
+                            bl
+                        };
                         if self.push_big_box(bb + dir, dir, test) {
                             if !test {
                                 self.set_c(bl + dir, Cell::BoxL);
@@ -192,10 +200,10 @@ impl Day15Grid for Grid<Cell> {
                         } else {
                             false
                         }
-                    },
+                    }
                     _ => panic!(),
                 }
-            },
+            }
         }
     }
 
@@ -209,15 +217,16 @@ impl Day15Grid for Grid<Cell> {
     }
 }
 
-fn to_dirs(input: &[String]) -> impl Iterator<Item=CDir> + '_ {
-    input.iter()
-        .flat_map(|i| i.chars().map(|c| match c {
+fn to_dirs(input: &[String]) -> impl Iterator<Item = CDir> + '_ {
+    input.iter().flat_map(|i| {
+        i.chars().map(|c| match c {
             '^' => CDir::N,
             'v' => CDir::S,
             '>' => CDir::E,
             '<' => CDir::W,
             _ => panic!(),
-        }))
+        })
+    })
 }
 
 fn part1(input: &[Vec<String>]) -> i64 {
