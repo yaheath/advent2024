@@ -2,8 +2,8 @@ use std::collections::{HashSet, VecDeque};
 use std::vec::Vec;
 use ya_advent_lib::algorithm::dijkstra_ex;
 use ya_advent_lib::coords::{CDir, Coord2D};
-use ya_advent_lib::read::read_input;
 use ya_advent_lib::grid::Grid;
+use ya_advent_lib::read::read_input;
 
 #[allow(dead_code)]
 #[derive(Clone, Copy, Eq, PartialEq)]
@@ -46,31 +46,30 @@ fn both_parts(input: &[String]) -> (usize, usize, String) {
         (start, CDir::E),
         |(loc, _)| *loc == end,
         |(loc, dir)| {
-            let mut n = vec![
-                ((*loc, dir.left()), 1000),
-                ((*loc, dir.right()), 1000),
-            ];
+            let mut n = vec![((*loc, dir.left()), 1000), ((*loc, dir.right()), 1000)];
             if grid.get_c(*loc + *dir) != Cell::Wall {
                 n.push((((*loc + *dir), *dir), 1));
             }
-            return n;
+            n
         },
         true,
-    ).unwrap();
+    )
+    .unwrap();
 
     let mut seats: HashSet<Coord2D> = HashSet::new();
     let mut queue: VecDeque<(Coord2D, CDir)> = VecDeque::new();
-    prev.iter().filter(|(coord, _)| coord.0 == end).for_each(|node| {
-        queue.push_back(*node.0);
-    });
+    prev.iter()
+        .filter(|(coord, _)| coord.0 == end)
+        .for_each(|node| {
+            queue.push_back(*node.0);
+        });
     while let Some(node) = queue.pop_front() {
         grid.set_c(node.0, Cell::Path);
         seats.insert(node.0);
         if let Some(pnode) = prev.get(&node) {
-            pnode.1.iter()
-                .for_each(|n| {
-                    queue.push_back(*n);
-                });
+            pnode.1.iter().for_each(|n| {
+                queue.push_back(*n);
+            });
         }
     }
 
@@ -92,7 +91,7 @@ mod tests {
     #[test]
     fn day16_test() {
         let input: Vec<String> = test_input(
-"###############
+            "###############
 #.......#....E#
 #.#.###.#.###.#
 #.....#.#...#.#
@@ -107,12 +106,14 @@ mod tests {
 #.###.#.#.#.#.#
 #S..#.....#...#
 ###############
-");
+",
+        );
         let (part1, part2, result) = both_parts(&input);
         assert_eq!(part1, 7036);
         assert_eq!(part2, 45);
-        assert_eq!(result,
-"###############
+        assert_eq!(
+            result,
+            "###############
 #.......#....O#
 #.#.###.#.###O#
 #.....#.#...#O#
@@ -127,10 +128,11 @@ mod tests {
 #O###.#.#.#O#O#
 #O..#.....#OOO#
 ###############
-");
+"
+        );
 
         let input: Vec<String> = test_input(
-"#################
+            "#################
 #...#...#...#..E#
 #.#.#.#.#.#.#.#.#
 #.#.#.#...#...#.#
@@ -147,12 +149,14 @@ mod tests {
 #.#.#.#########.#
 #S#.............#
 #################
-");
+",
+        );
         let (part1, part2, result) = both_parts(&input);
         assert_eq!(part1, 11048);
         assert_eq!(part2, 64);
-        assert_eq!(result,
-"#################
+        assert_eq!(
+            result,
+            "#################
 #...#...#...#..O#
 #.#.#.#.#.#.#.#O#
 #.#.#.#...#...#O#
@@ -169,10 +173,11 @@ mod tests {
 #O#O#O#########.#
 #O#OOO..........#
 #################
-");
+"
+        );
 
         let input: Vec<String> = test_input(
-"###########################
+            "###########################
 #######################..E#
 ######################..#.#
 #####################..##.#
@@ -199,13 +204,14 @@ mod tests {
 #.#######################.#
 #S........................#
 ###########################
-");
+",
+        );
         let (part1, part2, _) = both_parts(&input);
         assert_eq!(part1, 21148);
         assert_eq!(part2, 149);
 
         let input: Vec<String> = test_input(
-"####################################################
+            "####################################################
 #......................................#..........E#
 #......................................#...........#
 #....................#.................#...........#
@@ -219,7 +225,8 @@ mod tests {
 #....................#.............................#
 #S...................#.............................#
 ####################################################
-");
+",
+        );
         let (part1, part2, _) = both_parts(&input);
         assert_eq!(part1, 5078);
         assert_eq!(part2, 413);
