@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use std::time::Instant;
 use std::vec::Vec;
 use ya_advent_lib::coords::{CDir, Coord2D};
 use ya_advent_lib::grid::Grid;
@@ -249,8 +250,14 @@ fn part2(input: &[Vec<String>]) -> i64 {
 
 fn main() {
     let input: Vec<Vec<String>> = read_grouped_input();
-    println!("Part 1: {}", part1(&input));
-    println!("Part 2: {}", part2(&input));
+    let start = Instant::now();
+    let part1 = part1(&input);
+    let duration = start.elapsed();
+    println!("Part 1: {part1} ({duration:?})");
+    let start = Instant::now();
+    let part2 = part2(&input);
+    let duration = start.elapsed();
+    println!("Part 2: {part2} ({duration:?})");
 }
 
 #[cfg(test)]

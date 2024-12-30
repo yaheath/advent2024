@@ -1,6 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::str::FromStr;
+use std::time::Instant;
 use std::vec::Vec;
 use ya_advent_lib::coords::Coord2D;
 use ya_advent_lib::grid::Grid;
@@ -65,6 +66,7 @@ fn part1(input: &[Robot], is_example: bool) -> i64 {
     q1 * q2 * q3 * q4
 }
 
+#[allow(dead_code)]
 fn print_bots(robots: &[Robot]) {
     let mut grid: Grid<char> = Grid::new(0, 0, 100, 102, '.');
     robots.iter().for_each(|r| grid.set_c(r.pos, '#'));
@@ -94,7 +96,7 @@ fn part2(input: &[Robot]) -> usize {
             .filter(|r| center_range.contains(&r.pos.x) && center_range.contains(&r.pos.y))
             .count();
         if center_count > center_count_thresh {
-            print_bots(&robots);
+            //print_bots(&robots);
             return step;
         }
     }
@@ -102,8 +104,14 @@ fn part2(input: &[Robot]) -> usize {
 
 fn main() {
     let input: Vec<Robot> = read_input();
-    println!("Part 1: {}", part1(&input, false));
-    println!("Part 2: {}", part2(&input));
+    let start = Instant::now();
+    let part1 = part1(&input, false);
+    let duration = start.elapsed();
+    println!("Part 1: {part1} ({duration:?})");
+    let start = Instant::now();
+    let part2 = part2(&input);
+    let duration = start.elapsed();
+    println!("Part 2: {part2} ({duration:?})");
 }
 
 #[cfg(test)]

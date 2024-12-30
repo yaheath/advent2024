@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::time::Instant;
 use std::vec::Vec;
 use ya_advent_lib::algorithm::a_star_ex;
 use ya_advent_lib::coords::Coord2D;
@@ -64,9 +65,15 @@ fn part2(input: &[Coord2D], is_test: bool) -> Coord2D {
 
 fn main() {
     let input: Vec<Coord2D> = read_input();
-    println!("Part 1: {}", part1(&input, false));
-    let p2 = part2(&input, false);
-    println!("Part 2: {},{}", p2.x, p2.y);
+
+    let start = Instant::now();
+    let part1 = part1(&input, false);
+    let duration = start.elapsed();
+    println!("Part 1: {part1} ({duration:?})");
+    let start = Instant::now();
+    let part2 = part2(&input, false);
+    let duration = start.elapsed();
+    println!("Part 2: {},{} ({duration:?})", part2.x, part2.y);
 }
 
 #[cfg(test)]

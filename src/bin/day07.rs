@@ -1,5 +1,6 @@
 use itertools::{repeat_n, Itertools};
 use std::str::FromStr;
+use std::time::Instant;
 use std::vec::Vec;
 use ya_advent_lib::read::read_input;
 
@@ -71,8 +72,14 @@ fn part2(input: &[Input]) -> u64 {
 
 fn main() {
     let input: Vec<Input> = read_input();
-    println!("Part 1: {}", part1(&input));
-    println!("Part 2: {}", part2(&input));
+    let start = Instant::now();
+    let part1 = part1(&input);
+    let duration = start.elapsed();
+    println!("Part 1: {part1} ({duration:?})");
+    let start = Instant::now();
+    let part2 = part2(&input);
+    let duration = start.elapsed();
+    println!("Part 2: {part2} ({duration:?})");
 }
 
 #[cfg(test)]

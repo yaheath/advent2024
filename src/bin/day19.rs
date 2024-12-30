@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::str::FromStr;
+use std::time::Instant;
 use std::vec::Vec;
 use ya_advent_lib::read::read_sectioned_input;
 
@@ -48,9 +49,12 @@ fn both_parts(towels: &Towels, patterns: &[String]) -> (usize, usize) {
 
 fn main() {
     let input: (Vec<Towels>, Vec<String>) = read_sectioned_input();
+    let start = Instant::now();
     let (part1, part2) = both_parts(&input.0[0], &input.1);
+    let duration = start.elapsed();
     println!("Part 1: {}", part1);
     println!("Part 2: {}", part2);
+    println!("({duration:?})");
 }
 
 #[cfg(test)]

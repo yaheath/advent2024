@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::{collections::HashMap, num::ParseIntError, str::FromStr, vec::Vec};
+use std::{collections::HashMap, num::ParseIntError, str::FromStr, time::Instant, vec::Vec};
 use ya_advent_lib::read::read_input;
 
 #[derive(Copy, Clone)]
@@ -73,8 +73,14 @@ fn part2(input: &[MonkeyRNG]) -> usize {
 
 fn main() {
     let input: Vec<MonkeyRNG> = read_input();
-    println!("Part 1: {}", part1(&input));
-    println!("Part 2: {}", part2(&input));
+    let start = Instant::now();
+    let part1 = part1(&input);
+    let duration = start.elapsed();
+    println!("Part 1: {part1} ({duration:?})");
+    let start = Instant::now();
+    let part2 = part2(&input);
+    let duration = start.elapsed();
+    println!("Part 2: {part2} ({duration:?})");
 }
 
 #[cfg(test)]

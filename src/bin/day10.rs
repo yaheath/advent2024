@@ -1,4 +1,5 @@
 use std::collections::{HashSet, VecDeque};
+use std::time::Instant;
 use std::vec::Vec;
 use ya_advent_lib::coords::Coord2D;
 use ya_advent_lib::grid::Grid;
@@ -92,8 +93,14 @@ fn part2(input: &[String]) -> usize {
 
 fn main() {
     let input: Vec<String> = read_input();
-    println!("Part 1: {}", part1(&input));
-    println!("Part 2: {}", part2(&input));
+    let start = Instant::now();
+    let part1 = part1(&input);
+    let duration = start.elapsed();
+    println!("Part 1: {part1} ({duration:?})");
+    let start = Instant::now();
+    let part2 = part2(&input);
+    let duration = start.elapsed();
+    println!("Part 2: {part2} ({duration:?})");
 }
 
 #[cfg(test)]

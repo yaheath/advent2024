@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 use std::str::FromStr;
+use std::time::Instant;
 use std::vec::Vec;
 use topological_sort::TopologicalSort;
 use ya_advent_lib::read::read_sectioned_input;
@@ -68,9 +69,12 @@ fn bothparts(orders: &[OrderRule], pages: &[PageList]) -> (usize, usize) {
 
 fn main() {
     let input: (Vec<OrderRule>, Vec<PageList>) = read_sectioned_input();
+    let start = Instant::now();
     let (part1, part2) = bothparts(&input.0, &input.1);
+    let duration = start.elapsed();
     println!("Part 1: {part1}");
     println!("Part 2: {part2}");
+    println!("({duration:?})");
 }
 
 #[cfg(test)]

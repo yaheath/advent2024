@@ -1,4 +1,5 @@
 use std::collections::{HashSet, VecDeque};
+use std::time::Instant;
 use std::vec::Vec;
 use ya_advent_lib::algorithm::dijkstra_ex;
 use ya_advent_lib::coords::{CDir, Coord2D};
@@ -78,9 +79,12 @@ fn both_parts(input: &[String]) -> (usize, usize, String) {
 
 fn main() {
     let input: Vec<String> = read_input();
+    let start = Instant::now();
     let (part1, part2, _) = both_parts(&input);
+    let duration = start.elapsed();
     println!("Part 1: {}", part1);
     println!("Part 2: {}", part2);
+    println!("({duration:?})");
 }
 
 #[cfg(test)]
