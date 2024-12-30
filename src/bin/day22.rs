@@ -8,7 +8,7 @@ struct MonkeyRNG(usize);
 impl FromStr for MonkeyRNG {
     type Err = ParseIntError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        s.parse::<usize>().map(|v| Self(v))
+        s.parse::<usize>().map(Self)
     }
 }
 

@@ -11,8 +11,17 @@ impl KL {
     fn from_input(input: &[String]) -> Self {
         let p = input
             .iter()
-            .map(|i| i.chars().map(|c| if c == '#' { 1u8 } else { 0u8 }).collect::<Vec<_>>())
-            .reduce(|acc, v| acc.into_iter().zip(v).map(|(a, b)| a+b).collect::<Vec<u8>>())
+            .map(|i| {
+                i.chars()
+                    .map(|c| if c == '#' { 1u8 } else { 0u8 })
+                    .collect::<Vec<_>>()
+            })
+            .reduce(|acc, v| {
+                acc.into_iter()
+                    .zip(v)
+                    .map(|(a, b)| a + b)
+                    .collect::<Vec<u8>>()
+            })
             .map(|v| [v[0], v[1], v[2], v[3], v[4]])
             .unwrap();
 
@@ -32,17 +41,20 @@ impl KL {
             KL::Key(x) => x,
             KL::Lock(x) => x,
         };
-        a.into_iter().zip(b).all(|(x, y)| *x + *y <= 7)
+        a.iter().zip(b).all(|(x, y)| *x + *y <= 7)
     }
 }
 
 fn part1(input: &[Vec<String>]) -> usize {
-    let kls = input
+    let kls = input.iter().map(|i| KL::from_input(i)).collect::<Vec<_>>();
+    let keys = kls
         .iter()
-        .map(|i| KL::from_input(i))
+        .filter(|kl| matches!(kl, KL::Key(_)))
         .collect::<Vec<_>>();
-    let keys = kls.iter().filter(|kl| matches!(kl, KL::Key(_))).collect::<Vec<_>>();
-    let locks = kls.iter().filter(|kl| matches!(kl, KL::Lock(_))).collect::<Vec<_>>();
+    let locks = kls
+        .iter()
+        .filter(|kl| matches!(kl, KL::Lock(_)))
+        .collect::<Vec<_>>();
     keys.iter()
         .cartesian_product(locks)
         .filter(|(k, l)| k.fits(l))

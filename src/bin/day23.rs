@@ -125,7 +125,7 @@ fn part2(input: &[Input]) -> String {
         .map(|v| {
             v.iter()
                 .sorted_unstable()
-                .map(|n| String::from_iter(n))
+                .map(String::from_iter)
                 .join(",")
         })
         .unwrap()
